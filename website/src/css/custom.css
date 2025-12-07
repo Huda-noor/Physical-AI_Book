@@ -799,6 +799,386 @@ main {
 }
 
 /* ============================================
+   EXTREME 3D EFFECTS - NEXT LEVEL UI
+   ============================================ */
+
+/* 3D Perspective Container */
+html {
+  perspective: 1200px !important;
+}
+
+body {
+  transform-style: preserve-3d !important;
+}
+
+/* INSANE 3D HERO with Floating Elements */
+.hero--primary {
+  transform-style: preserve-3d !important;
+  animation: hero-float 6s ease-in-out infinite !important;
+}
+
+@keyframes hero-float {
+  0%, 100% {
+    transform: translateZ(0px) rotateX(0deg);
+  }
+  50% {
+    transform: translateZ(30px) rotateX(2deg);
+  }
+}
+
+/* Floating 3D Geometric Shapes in Background */
+.hero--primary::after {
+  content: '' !important;
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-image:
+    linear-gradient(30deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%),
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1) 0%, transparent 50%) !important;
+  animation: geometric-shift 15s ease-in-out infinite !important;
+  pointer-events: none !important;
+}
+
+@keyframes geometric-shift {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+    opacity: 0.9;
+  }
+}
+
+/* MEGA 3D CARDS with Perspective */
+.card {
+  transform-style: preserve-3d !important;
+  perspective: 1000px !important;
+  position: relative !important;
+  will-change: transform !important;
+}
+
+.card:hover {
+  transform: translateY(-30px) translateZ(50px) rotateX(10deg) rotateY(-5deg) scale(1.05) !important;
+  box-shadow:
+    0 50px 100px rgba(102, 126, 234, 0.6),
+    0 0 150px rgba(118, 75, 162, 0.4),
+    inset 0 0 50px rgba(255, 255, 255, 0.1) !important;
+  animation: card-glow 2s ease-in-out infinite !important;
+}
+
+@keyframes card-glow {
+  0%, 100% {
+    box-shadow:
+      0 50px 100px rgba(102, 126, 234, 0.6),
+      0 0 150px rgba(118, 75, 162, 0.4);
+  }
+  50% {
+    box-shadow:
+      0 60px 120px rgba(102, 126, 234, 0.8),
+      0 0 200px rgba(118, 75, 162, 0.6);
+  }
+}
+
+/* 3D Layered Card Header */
+.card__header {
+  transform: translateZ(60px) !important;
+  position: relative !important;
+  z-index: 3 !important;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+}
+
+.card__body {
+  transform: translateZ(30px) !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.card__footer {
+  transform: translateZ(20px) !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Holographic Effect on Cards */
+.card::after {
+  content: '' !important;
+  position: absolute !important;
+  top: -50% !important;
+  left: -50% !important;
+  width: 200% !important;
+  height: 200% !important;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
+  ) !important;
+  transform: translateZ(-10px) !important;
+  animation: holographic 8s linear infinite !important;
+  opacity: 0 !important;
+  transition: opacity 0.6s !important;
+}
+
+.card:hover::after {
+  opacity: 1 !important;
+}
+
+@keyframes holographic {
+  0% {
+    transform: translateZ(-10px) translateX(-100%) translateY(-100%) rotate(0deg);
+  }
+  100% {
+    transform: translateZ(-10px) translateX(100%) translateY(100%) rotate(360deg);
+  }
+}
+
+/* Ultra 3D Button */
+.button--secondary {
+  transform-style: preserve-3d !important;
+  position: relative !important;
+}
+
+.button--secondary::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 10px !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.5), rgba(118, 75, 162, 0.5)) !important;
+  border-radius: 50px !important;
+  transform: translateZ(-20px) !important;
+  transition: all 0.4s !important;
+  filter: blur(15px) !important;
+}
+
+.button--secondary:hover::before {
+  transform: translateZ(-40px) scale(1.2) !important;
+  opacity: 0.8 !important;
+}
+
+/* Floating Animation for Everything */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateZ(0px);
+  }
+  50% {
+    transform: translateY(-20px) translateZ(20px);
+  }
+}
+
+.card:nth-child(1) { animation: float 6s ease-in-out infinite !important; }
+.card:nth-child(2) { animation: float 7s ease-in-out infinite 0.5s !important; }
+.card:nth-child(3) { animation: float 6.5s ease-in-out infinite 1s !important; }
+.card:nth-child(4) { animation: float 7.5s ease-in-out infinite 1.5s !important; }
+.card:nth-child(5) { animation: float 6.8s ease-in-out infinite 2s !important; }
+.card:nth-child(6) { animation: float 7.2s ease-in-out infinite 2.5s !important;
+}
+
+/* 3D Tilt Effect on Mouse Move */
+.card {
+  transition: transform 0.3s ease-out !important;
+}
+
+/* Neon Glow Text Effect */
+.hero__title {
+  position: relative !important;
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.8),
+    0 0 20px rgba(255, 255, 255, 0.6),
+    0 0 30px rgba(102, 126, 234, 0.8),
+    0 0 40px rgba(102, 126, 234, 0.6),
+    0 0 70px rgba(118, 75, 162, 0.4),
+    0 0 100px rgba(118, 75, 162, 0.2) !important;
+  animation: neon-flicker 3s ease-in-out infinite !important;
+}
+
+@keyframes neon-flicker {
+  0%, 100% {
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.8),
+      0 0 20px rgba(255, 255, 255, 0.6),
+      0 0 30px rgba(102, 126, 234, 0.8),
+      0 0 70px rgba(118, 75, 162, 0.4);
+  }
+  50% {
+    text-shadow:
+      0 0 20px rgba(255, 255, 255, 1),
+      0 0 40px rgba(102, 126, 234, 1),
+      0 0 60px rgba(102, 126, 234, 0.8),
+      0 0 100px rgba(118, 75, 162, 0.6),
+      0 0 150px rgba(118, 75, 162, 0.4);
+  }
+}
+
+/* Laser Border Effect */
+.card {
+  border: 2px solid transparent !important;
+  background-clip: padding-box !important;
+  position: relative !important;
+}
+
+.card::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -2px !important;
+  left: -2px !important;
+  right: -2px !important;
+  bottom: -2px !important;
+  background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #667eea) !important;
+  border-radius: 25px !important;
+  opacity: 0 !important;
+  transition: opacity 0.6s !important;
+  z-index: -1 !important;
+  background-size: 300% 300% !important;
+  animation: gradient-rotate 4s ease infinite !important;
+}
+
+.card:hover::before {
+  opacity: 1 !important;
+}
+
+@keyframes gradient-rotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Glitch Effect on Hover */
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+/* Particle System Background */
+.hero--primary {
+  overflow: hidden !important;
+}
+
+/* Glass Morphism Effect */
+.navbar {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme='dark'] .navbar {
+  background: rgba(15, 23, 42, 0.7) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Ultra Smooth Scrolling */
+* {
+  scroll-behavior: smooth !important;
+}
+
+/* Depth of Field Effect */
+body {
+  animation: subtle-breathe 8s ease-in-out infinite !important;
+}
+
+@keyframes subtle-breathe {
+  0%, 100% {
+    filter: blur(0px);
+  }
+  50% {
+    filter: blur(0.3px);
+  }
+}
+
+/* Parallax Layers */
+.hero__title, .hero__subtitle, .button--secondary {
+  will-change: transform !important;
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1) !important;
+}
+
+/* Rainbow Holographic Chatbot */
+.chatbot-icon {
+  background: linear-gradient(
+    135deg,
+    #667eea 0%,
+    #764ba2 25%,
+    #f093fb 50%,
+    #4facfe 75%,
+    #00f2fe 100%
+  ) !important;
+  background-size: 400% 400% !important;
+  animation: rainbow-shift 6s ease infinite, mega-pulse 2.5s ease-in-out infinite !important;
+  box-shadow:
+    0 0 40px rgba(102, 126, 234, 0.8),
+    0 0 80px rgba(118, 75, 162, 0.6),
+    0 0 120px rgba(240, 147, 251, 0.4),
+    inset 0 0 20px rgba(255, 255, 255, 0.2) !important;
+  border: 3px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+@keyframes rainbow-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes mega-pulse {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    box-shadow:
+      0 0 40px rgba(102, 126, 234, 0.8),
+      0 0 80px rgba(118, 75, 162, 0.6),
+      0 0 0 0 rgba(102, 126, 234, 0);
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow:
+      0 0 60px rgba(102, 126, 234, 1),
+      0 0 120px rgba(118, 75, 162, 0.8),
+      0 0 0 40px rgba(102, 126, 234, 0);
+  }
+}
+
+.chatbot-icon:hover {
+  transform: scale(1.3) rotate(360deg) translateZ(50px) !important;
+  animation: rainbow-shift 2s ease infinite, spin-3d 1s ease-in-out !important;
+}
+
+@keyframes spin-3d {
+  0% {
+    transform: scale(1.3) rotate3d(0, 0, 1, 0deg);
+  }
+  100% {
+    transform: scale(1.3) rotate3d(0, 1, 1, 360deg);
+  }
+}
+
+/* ============================================
    ULTRA MODERN UI - OVERWRITES ALL PREVIOUS
    ============================================ */
 

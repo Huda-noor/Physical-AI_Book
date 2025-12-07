@@ -1,26 +1,45 @@
 ---
 id: chapter-2-basics-of-humanoid-robotics
-title: Chapter 2 - Basics of Humanoid Robotics
-sidebar_label: 2. Basics of Humanoid Robotics
+title: Chapter 2 - The Robotic Nervous System (ROS 2)
+sidebar_label: 2. ROS 2 Fundamentals
 sidebar_position: 2
 ---
 
-# Chapter 2: Basics of Humanoid Robotics
+# Chapter 2: The Robotic Nervous System (ROS 2)
 
-## Learning Objectives
+## Module 1: Middleware for Robot Control
+
+## Weeks 3-5: ROS 2 Fundamentals
+
+### Learning Objectives
 
 By the end of this chapter, you will be able to:
 
-- Understand the mechanical structure of humanoid robots
-- Identify key actuator technologies and their trade-offs
-- Explain the role of sensors in humanoid perception and control
-- Describe the fundamentals of robot kinematics and dynamics
+- Understand ROS 2 architecture and core concepts
+- Create and manage nodes, topics, services, and actions
+- Build ROS 2 packages with Python using `rclpy`
+- Bridge Python AI agents to ROS controllers
+- Work with URDF (Unified Robot Description Format) for humanoid robots
+- Configure launch files and manage parameters
 
-## Introduction
+## 2.1 What is ROS 2?
 
-Humanoid robots are designed to mimic human form and movement. Their bipedal structure and anthropomorphic design enable them to navigate human environments and use tools designed for people.
+**ROS 2 (Robot Operating System 2)** is the industry-standard middleware for robotics development. Think of it as the "nervous system" that connects sensors, actuators, and AI algorithms in a distributed robot architecture.
 
-Building humanoid robots presents unique engineering challenges: achieving stable bipedal locomotion, coordinating dozens of degrees of freedom, and maintaining balance under dynamic conditions.
+### Why ROS 2?
+
+Unlike ROS 1, ROS 2 is designed for:
+- **Real-time performance**: Deterministic communication for safety-critical systems
+- **Multi-robot systems**: Native support for swarms and collaborative robots
+- **Security**: Built-in encryption and authentication
+- **Cross-platform**: Linux, Windows, macOS support
+- **Industrial deployment**: Used by companies like Boston Dynamics, NASA, and Tesla
+
+### ROS 2 Distributions
+
+- **Humble Hawksbill** (LTS): Ubuntu 22.04, recommended for this course
+- **Iron Irwini**: Latest stable release
+- **Rolling Ridley**: Bleeding-edge development
 
 ## Core Concepts
 

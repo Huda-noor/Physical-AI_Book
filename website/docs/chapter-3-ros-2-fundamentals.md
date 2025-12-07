@@ -1,11 +1,11 @@
 ---
 id: chapter-3-ros-2-fundamentals
-title: Chapter 3 - ROS 2 Fundamentals
-sidebar_label: 3. ROS 2 Fundamentals
+title: Chapter 3 - The Digital Twin (Gazebo & Unity)
+sidebar_label: 3. Digital Twin Simulation
 sidebar_position: 3
 ---
 
-# Chapter 3: ROS 2 Fundamentals
+# Chapter 3: The Digital Twin (Gazebo & Unity)
 
 ## Learning Objectives
 
