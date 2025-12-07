@@ -54,7 +54,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/Hammad-Ali07/Physical-AI-Humanoid-Robotics/tree/main/website/',
+            'https://github.com/Huda-noor/Physical-AI-Humanoid-Robotics-Essentials/tree/main/website/',
         },
         blog: false,
         theme: {
@@ -84,7 +84,7 @@ const config: Config = {
           label: 'Chapters',
         },
         {
-          href: 'https://github.com/Hammad-Ali07/Physical-AI-Humanoid-Robotics',
+          href: 'https://github.com/Huda-noor/Physical-AI-Humanoid-Robotics-Essentials',
           label: 'GitHub',
           position: 'right',
         },
@@ -128,7 +128,7 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/Hammad-Ali07/Physical-AI-Humanoid-Robotics',
+              href: 'https://github.com/Huda-noor/Physical-AI-Humanoid-Robotics-Essentials',
             },
           ],
         },
