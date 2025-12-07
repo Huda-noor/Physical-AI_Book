@@ -1,0 +1,70 @@
+/**
+ * Personalize Button Styles
+ *
+ * Clean, minimal styling for the chapter personalization feature placeholder.
+ */
+
+.personalize-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  color: var(--ifm-color-content);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 8px;
+}
+
+.personalize-button:hover {
+  background: var(--ifm-color-emphasis-200);
+  border-color: var(--ifm-color-emphasis-400);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.personalize-button:active {
+  transform: translateY(0);
+}
+
+.personalize-button:focus {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+.personalize-icon {
+  flex-shrink: 0;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.personalize-text {
+  user-select: none;
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .personalize-button {
+  background: var(--ifm-color-emphasis-200);
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+[data-theme='dark'] .personalize-button:hover {
+  background: var(--ifm-color-emphasis-300);
+  border-color: var(--ifm-color-emphasis-500);
+}
+
+/* Responsive - hide text on small screens */
+@media (max-width: 576px) {
+  .personalize-text {
+    display: none;
+  }
+
+  .personalize-button {
+    padding: 8px;
+    min-width: 40px;
+    justify-content: center;
+  }
+}

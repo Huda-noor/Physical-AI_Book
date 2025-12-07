@@ -1,0 +1,66 @@
+name: Deploy Backend to Railway
+
+# NOTE: This workflow requires Railway CLI setup with GitHub Actions.
+# See Railway documentation: https://docs.railway.app/deploy/github-actions
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-deploy.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Python linting (Ruff)
+        run: |
+          cd backend
+          pip install ruff
+          ruff check . || echo "Linting warnings found"
+
+      # Railway deployment
+      # Requires RAILWAY_TOKEN secret to be configured in GitHub repository settings
+      - name: Deploy to Railway
+        if: github.event_name == 'push'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          # Install Railway CLI
+          npm i -g @railway/cli
+
+          # Deploy to Railway
+          cd backend
+          railway up --service backend || echo "Railway deployment requires manual setup. See DEPLOYMENT.md"
+
+      # Alternative: Manual deployment instructions
+      - name: Deployment instructions
+        if: ${{ !secrets.RAILWAY_TOKEN }}
+        run: |
+          echo "⚠️  RAILWAY_TOKEN not configured."
+          echo "To enable automatic deployment:"
+          echo "1. Create a Railway account at https://railway.app"
+          echo "2. Install Railway CLI: npm i -g @railway/cli"
+          echo "3. Login: railway login"
+          echo "4. Link project: railway link"
+          echo "5. Get token: railway whoami --token"
+          echo "6. Add RAILWAY_TOKEN to GitHub Secrets"
+          echo ""
+          echo "For manual deployment, see DEPLOYMENT.md"

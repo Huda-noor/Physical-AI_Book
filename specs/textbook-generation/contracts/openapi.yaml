@@ -1,0 +1,353 @@
+openapi: 3.1.0
+info:
+  title: Textbook RAG Chatbot API
+  description: |
+    FastAPI backend for AI-Native textbook with RAG (Retrieval-Augmented Generation) chatbot.
+
+    **Features:**
+    - Semantic search over textbook chapters using Qdrant vector database
+    - Source citation with chapter/section attribution
+    - Rate limiting (10 requests/minute per IP)
+    - Health monitoring for dependent services
+
+    **Free-Tier Stack:**
+    - Qdrant Community Cloud (1GB vectors)
+    - Neon PostgreSQL (0.5GB storage)
+    - sentence-transformers/all-MiniLM-L6-v2 (384-dim embeddings)
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.textbook.example.com
+    description: Production server (Railway/Render)
+  - url: http://localhost:8000
+    description: Local development server
+
+tags:
+  - name: query
+    description: Chatbot query endpoints
+  - name: health
+    description: Service health and monitoring
+
+paths:
+  /api/query:
+    post:
+      tags: [query]
+      summary: Submit chatbot query
+      description: |
+        Submit a natural language question to the RAG chatbot. The system will:
+        1. Generate an embedding for the question
+        2. Search Qdrant for top-5 most similar content chunks
+        3. Re-rank results and select top-3
+        4. Return answer with source citations
+
+        **Rate Limit**: 10 requests per minute per IP address.
+
+        **Response Time**: p95 <2 seconds, p50 <1 second.
+      operationId: submitQuery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequest'
+            examples:
+              simple_query:
+                summary: Simple question
+                value:
+                  question: "What is Physical AI?"
+                  max_results: 5
+              contextual_query:
+                summary: Question with selected text context
+                value:
+                  question: "Can you explain this in simpler terms?"
+                  context: "Humanoid robots utilize electric actuators, hydraulic systems, or pneumatic mechanisms to achieve motion."
+                  max_results: 5
+      responses:
+        '200':
+          description: Successful query with answer and sources
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResponse'
+              examples:
+                success_response:
+                  summary: Successful answer with sources
+                  value:
+                    answer: "Physical AI refers to artificial intelligence systems that interact with the physical world through embodied agents like robots. Unlike purely digital AI, Physical AI must handle real-world constraints such as sensor noise, actuator limitations, and dynamic environments."
+                    sources:
+                      - chapter: "1"
+                        section: "Introduction"
+                        page: 3
+                        confidence: 0.92
+                        chunk_id: "550e8400-e29b-41d4-a716-446655440000"
+                      - chapter: "1"
+                        section: "Key Applications"
+                        page: 5
+                        confidence: 0.87
+                        chunk_id: "660e8400-e29b-41d4-a716-446655440001"
+                    confidence: 0.895
+                    response_time_ms: 1243
+        '400':
+          description: Invalid request (missing required fields, invalid input)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_question_length:
+                  summary: Question too short
+                  value:
+                    error: "Invalid request"
+                    message: "Question must be between 3 and 1000 characters"
+                    status_code: 400
+                invalid_context_length:
+                  summary: Context too long
+                  value:
+                    error: "Invalid request"
+                    message: "Context must be at most 500 words (2000 characters)"
+                    status_code: 400
+        '429':
+          description: Rate limit exceeded
+          headers:
+            Retry-After:
+              description: Seconds until next request is allowed
+              schema:
+                type: integer
+                example: 45
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Rate limit exceeded"
+                message: "Maximum 10 requests per minute. Please wait 45 seconds."
+                status_code: 429
+                retry_after: 45
+        '500':
+          description: Internal server error (Qdrant/Neon connection failed, embedding model error)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Internal server error"
+                message: "Failed to connect to vector database. Please try again later."
+                status_code: 500
+
+  /api/health:
+    get:
+      tags: [health]
+      summary: Health check
+      description: |
+        Check the health status of the API and its dependencies:
+        - Qdrant vector database connectivity
+        - Neon PostgreSQL connectivity
+        - Embedding model loaded status
+
+        Returns HTTP 200 if all services are healthy, 503 if any service is down.
+      operationId: healthCheck
+      responses:
+        '200':
+          description: All services healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: "healthy"
+                services:
+                  qdrant: "connected"
+                  neon: "connected"
+                  embedding_model: "loaded"
+                timestamp: "2025-12-01T12:00:00Z"
+        '503':
+          description: One or more services unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: "unhealthy"
+                services:
+                  qdrant: "disconnected"
+                  neon: "connected"
+                  embedding_model: "loaded"
+                timestamp: "2025-12-01T12:00:00Z"
+                error: "Qdrant connection timeout after 5 seconds"
+
+components:
+  schemas:
+    QueryRequest:
+      type: object
+      required:
+        - question
+      properties:
+        question:
+          type: string
+          minLength: 3
+          maxLength: 1000
+          description: Natural language question about textbook content
+          example: "What are the main components of ROS 2?"
+        context:
+          type: string
+          maxLength: 2000
+          nullable: true
+          description: Optional selected text to provide context (max 500 words)
+          example: "ROS 2 uses a distributed architecture based on the Data Distribution Service (DDS) middleware."
+        max_results:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 5
+          description: Maximum number of similar chunks to retrieve from Qdrant
+          example: 5
+      additionalProperties: false
+
+    QueryResponse:
+      type: object
+      required:
+        - answer
+        - sources
+        - confidence
+        - response_time_ms
+      properties:
+        answer:
+          type: string
+          description: Generated answer based on retrieved chunks
+          example: "The main components of ROS 2 include nodes (independent processes), topics (asynchronous communication channels), services (synchronous request-response), and actions (long-running tasks with feedback)."
+        sources:
+          type: array
+          minItems: 1
+          maxItems: 5
+          description: Source citations with chapter/section attribution
+          items:
+            $ref: '#/components/schemas/Source'
+        confidence:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          description: Average confidence score across all sources
+          example: 0.89
+        response_time_ms:
+          type: integer
+          minimum: 0
+          description: Time taken to generate response (milliseconds)
+          example: 1243
+      additionalProperties: false
+
+    Source:
+      type: object
+      required:
+        - chapter
+        - section
+        - page
+        - confidence
+        - chunk_id
+      properties:
+        chapter:
+          type: string
+          description: Chapter number (1-6)
+          example: "3"
+        section:
+          type: string
+          description: Section title
+          example: "ROS 2 Architecture"
+        page:
+          type: integer
+          minimum: 1
+          description: Approximate page number in rendered textbook
+          example: 45
+        confidence:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          description: Relevance score for this source (cosine similarity)
+          example: 0.92
+        chunk_id:
+          type: string
+          format: uuid
+          description: Unique identifier for the content chunk
+          example: "550e8400-e29b-41d4-a716-446655440000"
+      additionalProperties: false
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - message
+        - status_code
+      properties:
+        error:
+          type: string
+          description: Error category
+          example: "Rate limit exceeded"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Maximum 10 requests per minute. Please wait 45 seconds."
+        status_code:
+          type: integer
+          description: HTTP status code
+          example: 429
+        retry_after:
+          type: integer
+          nullable: true
+          description: Seconds until next request is allowed (only for 429 errors)
+          example: 45
+      additionalProperties: false
+
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - services
+        - timestamp
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+          description: Overall health status
+          example: "healthy"
+        services:
+          type: object
+          description: Status of individual services
+          properties:
+            qdrant:
+              type: string
+              enum: [connected, disconnected]
+              example: "connected"
+            neon:
+              type: string
+              enum: [connected, disconnected]
+              example: "connected"
+            embedding_model:
+              type: string
+              enum: [loaded, not_loaded]
+              example: "loaded"
+          required:
+            - qdrant
+            - neon
+            - embedding_model
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of health check
+          example: "2025-12-01T12:00:00Z"
+        error:
+          type: string
+          nullable: true
+          description: Error message if status is unhealthy
+          example: "Qdrant connection timeout after 5 seconds"
+      additionalProperties: false
+
+  securitySchemes: {}
+
+security: []

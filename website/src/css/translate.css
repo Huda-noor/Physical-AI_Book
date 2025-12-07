@@ -1,0 +1,92 @@
+/**
+ * Translate Button Styles
+ *
+ * Clean, minimal styling for the Urdu translation feature placeholder.
+ */
+
+.translate-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  color: var(--ifm-color-content);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.translate-button:hover {
+  background: var(--ifm-color-emphasis-200);
+  border-color: var(--ifm-color-emphasis-400);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.translate-button:active {
+  transform: translateY(0);
+}
+
+.translate-button:focus {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+.translate-icon {
+  flex-shrink: 0;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.translate-text {
+  font-size: 16px;
+  font-weight: 600;
+  user-select: none;
+  /* Urdu text in Arabic script */
+  font-family: 'Noto Nastaliq Urdu', 'Noto Sans Arabic', Arial, sans-serif;
+}
+
+.translate-label {
+  user-select: none;
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .translate-button {
+  background: var(--ifm-color-emphasis-200);
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+[data-theme='dark'] .translate-button:hover {
+  background: var(--ifm-color-emphasis-300);
+  border-color: var(--ifm-color-emphasis-500);
+}
+
+/* Responsive - show only flag on small screens */
+@media (max-width: 576px) {
+  .translate-label {
+    display: none;
+  }
+
+  .translate-button {
+    padding: 8px 12px;
+  }
+}
+
+/* Future: RTL support for Urdu content */
+/*
+[data-language='urdu'] {
+  direction: rtl;
+  text-align: right;
+}
+
+[data-language='urdu'] article {
+  direction: rtl;
+}
+
+[data-language='urdu'] code {
+  direction: ltr;
+  display: inline-block;
+}
+*/
