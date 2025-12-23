@@ -160,6 +160,11 @@
   transform: translateX(4px);
 }
 
+.heroImage {
+  margin: 2rem 0 3rem;
+  text-align: center;
+}
+
 .stats {
   display: flex;
   gap: 4rem;
@@ -203,17 +208,37 @@
 
 .featureCard {
   text-align: center;
-  padding: 3rem 2rem;
+  padding: 2rem;
   background: white;
   border-radius: 20px;
   border: 1px solid #e5e7eb;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
 }
 
 .featureCard:hover {
   transform: translateY(-10px);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
   border-color: rgba(102, 126, 234, 0.3);
+}
+
+.featureImage {
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  height: 200px;
+}
+
+.featureImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.featureCard:hover .featureImage img {
+  transform: scale(1.05);
 }
 
 .featureIcon {
@@ -247,6 +272,9 @@
   font-size: 1rem;
   line-height: 1.7;
   color: #64748b;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
 }
 
 /* CHAPTERS SECTION */
@@ -297,7 +325,7 @@
 .chapterCard {
   background: white;
   border-radius: 24px;
-  padding: 2.5rem;
+  padding: 1.5rem;
   border: 1px solid #e5e7eb;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none !important;
@@ -329,6 +357,24 @@
   transform: translateY(-8px);
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
   border-color: rgba(102, 126, 234, 0.3);
+}
+
+.cardImage {
+  border-radius: 12px;
+  overflow: hidden;
+  height: 180px;
+  margin-bottom: 1.5rem;
+}
+
+.cardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.chapterCard:hover .cardImage img {
+  transform: scale(1.05);
 }
 
 .cardIconWrapper {
@@ -430,10 +476,24 @@
   max-width: 800px;
   margin: 0 auto;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.ctaImage {
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ctaImage img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .ctaContent {
-  padding: 4rem 2rem;
+  padding: 2rem 2rem;
 }
 
 .ctaTitle {
