@@ -64,6 +64,12 @@ const config: Config = {
     ],
   ],
 
+  stylesheets: [
+    {
+      href: '/css/chatbot.css',
+      type: 'text/css',
+    },
+  ],
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
@@ -82,6 +88,11 @@ const config: Config = {
           sidebarId: 'textbookSidebar',
           position: 'left',
           label: 'Chapters',
+        },
+        {
+          to: '/signin',
+          label: 'Sign In',
+          position: 'right',
         },
         {
           href: 'https://github.com/Huda-noor/Physical-AI-Humanoid-Robotics-Essentials',

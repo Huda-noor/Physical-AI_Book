@@ -19,9 +19,14 @@ By the end of this chapter, you will be able to:
 - Identify the sensor systems essential for Physical AI
 - Explore the humanoid robotics landscape
 
+import ChapterPersonalization from '@site/src/components/ChapterPersonalization';
+import ContextualChat from '@site/src/components/ContextualChat';
+
 ## 1.1 What is Physical AI?
 
+<ChapterPersonalization chapterTitle="Introduction to Physical AI">
 The future of AI extends beyond digital spaces into the physical world. **Physical AI** refers to AI systems that function in reality and comprehend physical laws. Unlike traditional AI confined to screens and virtual environments, Physical AI bridges the gap between the digital brain and the physical body.
+</ChapterPersonalization>
 
 ### From Digital to Physical Intelligence
 
@@ -37,6 +42,12 @@ The future of AI extends beyond digital spaces into the physical world. **Physic
 - Acts upon the world through actuators and motors
 
 > **Key Insight**: Humanoid robots are poised to excel in our human-centered world because they share our physical form and can be trained with abundant data from interacting in human environments.
+
+<ContextualChat
+  chapterTitle="Introduction to Physical AI"
+  sectionTitle="What is Physical AI?"
+  contentContext="Physical AI refers to AI systems that function in reality and comprehend physical laws. Unlike traditional AI confined to screens and virtual environments, Physical AI bridges the gap between the digital brain and the physical body."
+/>
 
 ## 1.2 Why Humanoid Robotics Matters
 
