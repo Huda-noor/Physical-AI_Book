@@ -1,27 +1,24 @@
 # Images for Physical AI & Humanoid Robotics Educational Platform
 
-This directory contains images for the educational platform homepage. Here are the recommended images to add:
+This directory contains documentation about images for the educational platform homepage. The actual images are located in the parent `static/img/` directory. Here are the images currently used:
 
-## Required Images for Homepage
-
-### Hero Section
-- `humanoid-robot-hero.jpg` - Large banner image showing a humanoid robot or educational scene
+## Images Used in Homepage
 
 ### Features Section
-- `embodied-intelligence.jpg` - Image representing embodied intelligence (robot learning, AI in physical form)
-- `industry-tools.jpg` - Image showing ROS 2, NVIDIA Isaac Sim, Gazebo tools
-- `hands-on-projects.jpg` - Image of students working on robotics projects
+- `human-meets-robot-stockcake.webp` - Used for Embodied Intelligence feature
+- `robot-with-stock-chart.webp` - Used for Industry-Standard Tools feature
+- `robot-coding-session-stockcake.webp` - Used for Hands-On Projects feature
 
 ### Chapters Section
-- `chapter1-physical-ai.jpg` - Image for Introduction to Physical AI (e.g., robot in physical environment)
-- `chapter2-robotic-nervous-system.jpg` - Image for The Robotic Nervous System (e.g., ROS architecture)
-- `chapter3-digital-twin.jpg` - Image for Digital Twin Simulation (e.g., Gazebo or Unity simulation)
-- `chapter4-ai-brain.jpg` - Image for The AI-Robot Brain (e.g., NVIDIA Isaac Sim)
-- `chapter5-vision-language-action.jpg` - Image for Vision-Language-Action (e.g., robot responding to voice commands)
-- `chapter6-capstone-project.jpg` - Image for Capstone Project (e.g., completed humanoid robot project)
+- `iStock-1184804468-1000x0-c-default.webp` - Used for Chapter 1: Introduction to Physical AI
+- `istockphoto-1496920323-612x612.jpg` - Used for Chapter 2: The Robotic Nervous System
+- `istockphoto-966248982-612x612.jpg` - Used for Chapter 3: Digital Twin Simulation
+- `0_coCX2RBuCrXzsPgp.jpg` - Used for Chapter 4: The AI-Robot Brain
+- `360_F_272681855_yaxT3ZJGgOo3AHzNEKOfORe5YznybPCP.jpg` - Used for Chapter 5: Vision-Language-Action
+- `robot-with-stock-chart.webp` - Used for Chapter 6: Capstone Project
 
 ### CTA Section
-- `cta-image.jpg` - Image for the call-to-action section (e.g., students learning robotics)
+- `human-meets-robot-stockcake.webp` - Used for the call-to-action section
 
 ## Image Guidelines
 
@@ -31,7 +28,6 @@ This directory contains images for the educational platform homepage. Here are t
 - Use SVG for simple vector graphics
 
 ### Size
-- Hero images: 1200x600 pixels (or larger)
 - Feature images: 800x600 pixels
 - Chapter card images: 600x400 pixels
 - Small icons: 200x200 pixels
@@ -41,13 +37,10 @@ This directory contains images for the educational platform homepage. Here are t
 - Use compression tools to optimize without losing quality
 - Ensure images are high resolution but optimized for web
 
-## How to Add Images
+## How to Add New Images
 
-1. Place your images in this directory (`static/img/homepage/`)
-2. Make sure filenames match the ones referenced in the code:
-   - `humanoid-robot-hero.jpg`
-   - `embodied-intelligence.jpg`
-   - etc.
+1. Place your new images in the `static/img/` directory
+2. Update the `src` attributes in `src/pages/index.tsx` to reference your new images
 3. Run `npm run build` to ensure the site builds correctly with your images
 4. Test the site locally with `npm run start`
 

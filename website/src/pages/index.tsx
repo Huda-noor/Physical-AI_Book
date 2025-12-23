@@ -22,13 +22,6 @@ function HeroSection() {
             Master Physical AI, ROS 2, NVIDIA Isaac Sim, and Vision-Language-Action models.
             From simulation to real-world deployment in 13 weeks.
           </p>
-          <div className={styles.heroImage}>
-            <img
-              src="/img/homepage/humanoid-robot-hero.jpg"
-              alt="Humanoid Robot Learning"
-              style={{ maxWidth: '100%', height: 'auto', borderRadius: '12px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
-            />
-          </div>
           <div className={styles.heroButtons}>
             <Link to="/docs/chapter-1-introduction-to-physical-ai" className={styles.primaryButton}>
               Start Learning
@@ -69,7 +62,7 @@ function ChaptersSection() {
       description: 'Foundations of embodied intelligence, sensor ecosystems, and humanoid robotics landscape.',
       link: '/docs/chapter-1-introduction-to-physical-ai',
       gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      image: '/img/homepage/chapter1-physical-ai.jpg'
+      image: '/img/iStock-1184804468-1000x0-c-default.webp'
     },
     {
       number: '02',
@@ -78,7 +71,7 @@ function ChaptersSection() {
       description: 'Master ROS 2 architecture, nodes, topics, and bridge Python AI to robot controllers.',
       link: '/docs/chapter-2-basics-of-humanoid-robotics',
       gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-      image: '/img/homepage/chapter2-robotic-nervous-system.jpg'
+      image: '/img/istockphoto-1496920323-612x612.jpg'
     },
     {
       number: '03',
@@ -87,7 +80,7 @@ function ChaptersSection() {
       description: 'Build high-fidelity environments with Gazebo and Unity for robot testing.',
       link: '/docs/chapter-3-ros-2-fundamentals',
       gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-      image: '/img/homepage/chapter3-digital-twin.jpg'
+      image: '/img/istockphoto-966248982-612x612.jpg'
     },
     {
       number: '04',
@@ -96,7 +89,7 @@ function ChaptersSection() {
       description: 'NVIDIA Isaac Sim, photorealistic simulation, synthetic data, and VSLAM.',
       link: '/docs/chapter-4-digital-twin-simulation',
       gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-      image: '/img/homepage/chapter4-ai-brain.jpg'
+      image: '/img/0_coCX2RBuCrXzsPgp.jpg'
     },
     {
       number: '05',
@@ -105,7 +98,7 @@ function ChaptersSection() {
       description: 'Integrate LLMs with robotics and translate voice commands to actions.',
       link: '/docs/chapter-5-vision-language-action-systems',
       gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-      image: '/img/homepage/chapter5-vision-language-action.jpg'
+      image: '/img/360_F_272681855_yaxT3ZJGgOo3AHzNEKOfORe5YznybPCP.jpg'
     },
     {
       number: '06',
@@ -114,7 +107,7 @@ function ChaptersSection() {
       description: 'Build an autonomous humanoid with voice understanding and object manipulation.',
       link: '/docs/chapter-6-capstone-ai-robot-pipeline',
       gradient: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
-      image: '/img/homepage/chapter6-capstone-project.jpg'
+      image: '/img/robot-with-stock-chart.webp'
     },
   ];
 
@@ -161,19 +154,19 @@ function FeaturesSection() {
       title: 'Embodied Intelligence',
       description: 'Learn how AI transitions from digital environments to physical robots that understand real-world physics and dynamics.',
       gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      image: '/img/homepage/embodied-intelligence.jpg'
+      image: '/img/human-meets-robot-stockcake.webp'
     },
     {
       title: 'Industry-Standard Tools',
       description: 'Master ROS 2, NVIDIA Isaac Sim, and Gazebo - the same tools used by Boston Dynamics, Tesla, and NASA.',
       gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-      image: '/img/homepage/industry-tools.jpg'
+      image: '/img/robot-with-stock-chart.webp'
     },
     {
       title: 'Hands-On Projects',
       description: 'Build real projects from simulation to deployment, culminating in a fully autonomous humanoid robot.',
       gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-      image: '/img/homepage/hands-on-projects.jpg'
+      image: '/img/robot-coding-session-stockcake.webp'
     },
   ];
 
@@ -207,7 +200,7 @@ function CTASection() {
         <div className={styles.ctaCard}>
           <div className={styles.ctaImage}>
             <img
-              src="/img/homepage/cta-image.jpg"
+              src="/img/human-meets-robot-stockcake.webp"
               alt="Join the robotics education journey"
               style={{ maxWidth: '100%', height: 'auto', borderRadius: '12px' }}
             />
