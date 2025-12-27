@@ -62,7 +62,7 @@ function ChaptersSection() {
       description: 'Foundations of embodied intelligence, sensor ecosystems, and humanoid robotics landscape.',
       link: '/docs/chapter-1-introduction-to-physical-ai',
       gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      image: '/img/iStock-1184804468-1000x0-c-default.webp'
+      image: '/img/human-meets-robot-stockcake.webp'
     },
     {
       number: '02',
@@ -80,7 +80,7 @@ function ChaptersSection() {
       description: 'Build high-fidelity environments with Gazebo and Unity for robot testing.',
       link: '/docs/chapter-3-ros-2-fundamentals',
       gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-      image: '/img/istockphoto-966248982-612x612.jpg'
+      image: '/img/robot-coding-session-stockcake.webp'
     },
     {
       number: '04',
@@ -89,7 +89,7 @@ function ChaptersSection() {
       description: 'NVIDIA Isaac Sim, photorealistic simulation, synthetic data, and VSLAM.',
       link: '/docs/chapter-4-digital-twin-simulation',
       gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-      image: '/img/0_coCX2RBuCrXzsPgp.jpg'
+      image: '/img/robot-with-stock-chart.webp'
     },
     {
       number: '05',
@@ -107,7 +107,7 @@ function ChaptersSection() {
       description: 'Build an autonomous humanoid with voice understanding and object manipulation.',
       link: '/docs/chapter-6-capstone-ai-robot-pipeline',
       gradient: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
-      image: '/img/robot-with-stock-chart.webp'
+      image: '/img/iStock-1184804468-1000x0-c-default.webp'
     },
   ];
 
@@ -160,7 +160,7 @@ function FeaturesSection() {
       title: 'Industry-Standard Tools',
       description: 'Master ROS 2, NVIDIA Isaac Sim, and Gazebo - the same tools used by Boston Dynamics, Tesla, and NASA.',
       gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-      image: '/img/robot-with-stock-chart.webp'
+      image: '/img/istockphoto-966248982-612x612.jpg'
     },
     {
       title: 'Hands-On Projects',
@@ -200,7 +200,7 @@ function CTASection() {
         <div className={styles.ctaCard}>
           <div className={styles.ctaImage}>
             <img
-              src="/img/human-meets-robot-stockcake.webp"
+              src="/img/robot-coding-session-stockcake.webp"
               alt="Join the robotics education journey"
               style={{ maxWidth: '100%', height: 'auto', borderRadius: '12px' }}
             />

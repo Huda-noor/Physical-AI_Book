@@ -217,8 +217,16 @@ const ProfilePage: React.FC = () => {
                         {isEditing ? 'Save Changes' : 'Edit Profile'}
                       </button>
                       
-                      <button 
-                        onClick={() => signOut()}
+                      <button
+                        onClick={async () => {
+                          try {
+                            await signOut();
+                            // Redirect to homepage after sign out
+                            window.location.href = '/';
+                          } catch (error) {
+                            console.error('Sign out error:', error);
+                          }
+                        }}
                         className="button button--secondary"
                       >
                         Sign Out

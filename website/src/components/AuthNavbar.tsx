@@ -4,8 +4,19 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useAuth } from '../contexts/AuthContext';
 
 const AuthNavbar: React.FC = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, signOut } = useAuth();
   const { siteConfig } = useDocusaurusContext();
+
+  const handleSignOut = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      await signOut();
+      // Redirect to homepage after sign out
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
+  };
 
   return (
     <div className="navbar__item navbar__link">
@@ -21,17 +32,13 @@ const AuthNavbar: React.FC = () => {
               </Link>
             </li>
             <li>
-              <Link 
-                className="dropdown__link" 
-                to="/api/auth/sign-out"
-                onClick={(e) => {
-                  e.preventDefault();
-                  // This would call the signOut function from the context
-                  // For now, we'll handle it in the profile page
-                }}
+              <a
+                className="dropdown__link"
+                href="#"
+                onClick={handleSignOut}
               >
                 Sign Out
-              </Link>
+              </a>
             </li>
           </ul>
         </div>
