@@ -218,7 +218,8 @@ const ProfilePage: React.FC = () => {
                       </button>
                       
                       <button
-                        onClick={async () => {
+                        onClick={async (e) => {
+                          e.preventDefault();
                           try {
                             await signOut();
                             // Redirect to homepage after sign out
