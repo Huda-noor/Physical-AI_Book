@@ -8,5 +8,8 @@
       "source": "/api/:path*",
       "destination": "/api/:path*"
     }
-  ]
+  ],
+  "engines": {
+    "node": "20.x"
+  }
 }
