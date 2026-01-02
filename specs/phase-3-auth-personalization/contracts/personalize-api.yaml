@@ -1,0 +1,45 @@
+# Personalization API Contract
+
+**Base URL**: `http://localhost:8000/api`
+
+## Endpoints
+
+### 1. Personalize Chapter
+`POST /personalize`
+
+Generates or retrieves a personalized version of a chapter.
+
+**Auth**: Requires `better-auth.session_token` cookie or Bearer token.
+
+**Request Body**:
+```json
+{
+  "chapter_id": 1
+}
+```
+
+**Response**:
+```json
+{
+  "chapter_id": 1,
+  "personalized_markdown": "The adapted content...",
+  "is_cached": true,
+  "generation_time_ms": 150
+}
+```
+
+### 2. Update Profile
+`POST /profile`
+
+**Request Body**:
+```json
+{
+  "software_experience": {
+    "python": "advanced",
+    "ros2": "intermediate"
+  },
+  "robotics_experience": "simulation_only",
+  "hardware_access": ["gpu_nvidia"],
+  "learning_goals": ["career_change"]
+}
+```

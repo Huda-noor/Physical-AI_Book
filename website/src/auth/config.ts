@@ -17,8 +17,8 @@ declare module "better-auth" {
 
 export const auth = betterAuth({
   database: {
-    provider: "sqlite",
-    url: process.env.DATABASE_URL || "./sqlite.db",
+    provider: "pg",
+    url: process.env.DATABASE_URL!,
   },
   // Define custom fields for user profile
   user: {

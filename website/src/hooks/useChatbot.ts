@@ -70,6 +70,7 @@ export function useChatbot(): UseChatbotReturn {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           question: question,
           top_k: 5,

@@ -16,6 +16,7 @@ const RAGChatbotContent: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedText, setSelectedText] = useState<string>('');
   const [sessionId, setSessionId] = useState<string>(() => {
     // Generate a unique session ID or retrieve from localStorage
     if (typeof window !== 'undefined') {
@@ -25,6 +26,24 @@ const RAGChatbotContent: React.FC = () => {
   });
 
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
+  // Detect text selection on the page
+  useEffect(() => {
+    const handleSelectionChange = () => {
+      const selection = window.getSelection();
+      const text = selection?.toString().trim() || '';
+      if (text && text.length > 10) {
+        setSelectedText(text);
+      } else if (text.length === 0) {
+        setSelectedText('');
+      }
+    };
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+    };
+  }, []);
 
   // Load chat history from localStorage when component mounts
   useEffect(() => {
@@ -70,8 +89,8 @@ const RAGChatbotContent: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Call the RAG API
-      const response = await callRAGAPI(inputValue, sessionId);
+      // Call the RAG API (with selected text if available)
+      const response = await callRAGAPI(inputValue, sessionId, selectedText);
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -81,6 +100,8 @@ const RAGChatbotContent: React.FC = () => {
       };
 
       setMessages(prev => [...prev, botMessage]);
+      // Clear selected text after use
+      setSelectedText('');
     } catch (error) {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -95,13 +116,20 @@ const RAGChatbotContent: React.FC = () => {
   };
 
   // Call the RAG API
-  const callRAGAPI = async (query: string, sessionId: string): Promise<string> => {
-    const response = await fetch('http://localhost:3001/rag/chat', {
+  const callRAGAPI = async (query: string, sessionId: string, selectedText?: string): Promise<string> => {
+    // Use backend API URL from environment or default
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
+    const response = await fetch(`${apiUrl}/api/query`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query, sessionId }),
+      body: JSON.stringify({
+        question: query,
+        top_k: 5,
+        selected_text: selectedText || null
+      }),
     });
 
     if (!response.ok) {
@@ -109,7 +137,17 @@ const RAGChatbotContent: React.FC = () => {
     }
 
     const data = await response.json();
-    return data.response;
+    // Return the answer with sources
+    let responseText = data.answer;
+
+    if (data.sources && data.sources.length > 0) {
+      responseText += '\n\n**Sources:**\n';
+      data.sources.forEach((source: any, idx: number) => {
+        responseText += `${idx + 1}. Chapter ${source.chapter_id}, ${source.section_title} (relevance: ${(source.relevance_score * 100).toFixed(1)}%)\n`;
+      });
+    }
+
+    return responseText;
   };
 
   const handleClearChat = () => {
@@ -128,6 +166,18 @@ const RAGChatbotContent: React.FC = () => {
           Clear Chat
         </button>
       </div>
+
+      {selectedText && (
+        <div className="selected-text-indicator">
+          <span className="indicator-icon">📝</span>
+          <span className="indicator-text">
+            Text selected ({selectedText.length} chars) - Your question will be answered based on this selection
+          </span>
+          <button onClick={() => setSelectedText('')} className="clear-selection-button">
+            ✕
+          </button>
+        </div>
+      )}
 
       <div className="chat-messages">
         {messages.length === 0 ? (

@@ -15,37 +15,36 @@
  * - Personalized recommendations
  */
 import React from 'react';
+import { usePersonalization } from '@site/src/contexts/PersonalizationContext';
+import { useAuth } from '@site/src/contexts/AuthContext';
 
 export default function PersonalizeButton(): JSX.Element {
+  const { isPersonalized, setIsPersonalized } = usePersonalization();
+  const { isAuthenticated } = useAuth();
+
   const handleClick = () => {
-    alert(
-      '🚧 Coming Soon!\n\n' +
-      'Personalization features will be available in Phase 2.\n\n' +
-      'Planned features:\n' +
-      '• Adjust content complexity (beginner/intermediate/advanced)\n' +
-      '• Track your reading progress\n' +
-      '• Customize chapter order based on your background\n' +
-      '• Save notes and highlights\n' +
-      '• Get personalized recommendations'
-    );
+    if (!isAuthenticated) {
+      alert('Please sign in to access personalization features');
+      return;
+    }
+    setIsPersonalized(!isPersonalized);
   };
 
   return (
     <button
-      className="personalize-button"
+      className={`personalize-button ${isPersonalized ? 'active' : ''}`}
       onClick={handleClick}
       aria-label="Personalize chapter content"
-      title="Customize this chapter for your learning level"
+      title={isPersonalized ? "Show original content" : "Customize this chapter for your learning level"}
     >
       <svg
         width="18"
         height="18"
         viewBox="0 0 24 24"
-        fill="none"
+        fill={isPersonalized ? "currentColor" : "none"}
         xmlns="http://www.w3.org/2000/svg"
         className="personalize-icon"
       >
-        {/* Settings/gear icon */}
         <path
           d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
           stroke="currentColor"
@@ -61,7 +60,7 @@ export default function PersonalizeButton(): JSX.Element {
           strokeLinejoin="round"
         />
       </svg>
-      <span className="personalize-text">Personalize</span>
+      <span className="personalize-text">{isPersonalized ? 'Personalized' : 'Personalize'}</span>
     </button>
   );
 }
