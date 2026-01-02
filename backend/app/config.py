@@ -9,6 +9,9 @@ from typing import List
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
+    # OpenAI Configuration
+    openai_api_key: str
+
     # Qdrant Configuration
     qdrant_url: str
     qdrant_api_key: str
@@ -16,9 +19,19 @@ class Settings(BaseSettings):
     # Neon PostgreSQL Configuration
     database_url: str
 
-    # Embedding Model Configuration
-    transformers_cache: str = "./models_cache"
-    model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
+    # Model Configuration (OpenAI)
+    embedding_model: str = "text-embedding-ada-002"
+    llm_model: str = "gpt-4o-mini"
+
+    # Better Auth Configuration
+    better_auth_url: str = "http://localhost:3001"
+
+    # S3 / Object Storage Configuration
+    s3_access_key_id: str = ""
+    s3_secret_access_key: str = ""
+    s3_region: str = "us-east-1"
+    s3_bucket_name: str = "personalized-chapters"
+    s3_endpoint_url: str = ""  # For local testing with Minio or non-AWS S3
 
     # API Configuration
     allowed_origins: str = "http://localhost:3000"

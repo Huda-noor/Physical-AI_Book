@@ -1,0 +1,22 @@
+{
+  "name": "better-auth-sidecar",
+  "version": "1.0.0",
+  "description": "Better Auth sidecar for Phase 3 authentication",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "better-auth": "^1.4.9",
+    "hono": "^4.6.0",
+    "@hono/node-server": "^1.13.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "tsx": "^4.19.0",
+    "@types/node": "^22.0.0"
+  }
+}

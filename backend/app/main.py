@@ -13,7 +13,12 @@ from slowapi.util import get_remote_address
 from app.config import settings
 from app.api.health import router as health_router
 from app.api.query import router as query_router
-from app.services.embedding_service import embedding_service
+from app.api.profile import router as profile_router
+from app.api.personalize import router as personalize_router
+from app.api.translate import router as translate_router
+from app.services.openai_service import openai_service
+from app.services.qdrant_service import qdrant_service
+from app.services.neon_service import neon_service
 
 # Configure logging
 logging.basicConfig(
@@ -38,13 +43,27 @@ async def lifespan(app: FastAPI):
     logger.info(f"Environment: {settings.log_level}")
     logger.info(f"CORS Origins: {settings.cors_origins}")
 
-    # Load embedding model
-    logger.info("Loading embedding model...")
-    success = embedding_service.load_model()
+    # Verify OpenAI connection
+    logger.info("Verifying OpenAI connection...")
+    success = openai_service.health_check()
     if success:
-        logger.info("✅ Embedding model loaded successfully")
+        logger.info("✅ OpenAI API connected")
     else:
-        logger.error("❌ Failed to load embedding model")
+        logger.warning("⚠️ OpenAI API connection issue")
+
+    # Verify Qdrant connection
+    logger.info("Verifying Qdrant connection...")
+    if qdrant_service.health_check():
+        logger.info("✅ Qdrant connected")
+    else:
+        logger.warning("⚠️ Qdrant connection issue")
+
+    # Verify Neon connection
+    logger.info("Verifying Neon database connection...")
+    if neon_service.health_check():
+        logger.info("✅ Neon database connected")
+    else:
+        logger.warning("⚠️ Neon database connection issue")
 
     yield
 
@@ -76,6 +95,9 @@ app.add_middleware(
 # Register routes
 app.include_router(health_router, prefix="", tags=["Health"])
 app.include_router(query_router, prefix="", tags=["Query"])
+app.include_router(profile_router, prefix="/api", tags=["Profile"])
+app.include_router(personalize_router, prefix="/api", tags=["Personalization"])
+app.include_router(translate_router, prefix="/api", tags=["Translation"])
 
 # Root endpoint
 @app.get("/", tags=["Root"])

@@ -17,6 +17,10 @@ router = APIRouter()
 limiter = Limiter(key_func=get_remote_address)
 
 
+from typing import Dict, Optional, Any
+from app.services.auth_service import get_current_user
+from app.services.neon_service import neon_service
+
 @router.post(
     "/api/query",
     response_model=ChatQueryResponse,
@@ -27,51 +31,30 @@ limiter = Limiter(key_func=get_remote_address)
     tags=["Query"]
 )
 @limiter.limit(f"{settings.rate_limit_per_minute}/minute")
-async def query_textbook(request: Request, query: ChatQueryRequest):
+async def query_textbook(
+    request: Request,
+    query: ChatQueryRequest,
+    current_user: Optional[Dict] = Depends(get_current_user)
+):
     """
-    Query the textbook using RAG.
-
-    Processes the user's question through:
-    1. Semantic search in vector database
-    2. Metadata retrieval from PostgreSQL
-    3. Re-ranking and citation generation
-    4. Answer synthesis
-
-    **Rate Limit**: 10 requests per minute per IP
-
-    **Example Request**:
-    ```json
-    {
-      "question": "What is Physical AI?",
-      "top_k": 5
-    }
-    ```
-
-    **Example Response**:
-    ```json
-    {
-      "answer": "Based on the textbook content...",
-      "sources": [
-        {
-          "chunk_id": "uuid",
-          "chapter_id": 1,
-          "section_id": "1.1",
-          "section_title": "Introduction",
-          "preview_text": "Physical AI is...",
-          "relevance_score": 0.89
-        }
-      ],
-      "query_time_ms": 145
-    }
-    ```
+    Query the textbook using RAG with personalization.
     """
     try:
         logger.info(f"Received query: {query.question[:50]}...")
 
-        # Process query through RAG pipeline
+        # 1. Retrieve User Profile if logged in
+        user_profile = None
+        if current_user:
+            user_id = current_user.get("id")
+            profile_query = "SELECT * FROM user_profiles WHERE user_id = $1"
+            user_profile = await neon_service.fetch_one(profile_query, user_id)
+
+        # 2. Process query through RAG pipeline
         answer, sources, query_time_ms = rag_service.process_query(
             question=query.question,
-            top_k=query.top_k
+            top_k=query.top_k,
+            selected_text=query.selected_text,
+            user_profile=user_profile
         )
 
         # Return response

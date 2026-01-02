@@ -63,15 +63,16 @@ class NeonService:
                 """
                 INSERT INTO chunk_metadata (
                     chunk_id, chapter_id, section_id, section_title,
-                    chunk_index, token_count, char_count, preview_text, indexed_at
+                    chunk_index, token_count, char_count, preview_text, full_text, indexed_at
                 ) VALUES (
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                 )
                 ON CONFLICT (chapter_id, section_id, chunk_index)
                 DO UPDATE SET
                     token_count = EXCLUDED.token_count,
                     char_count = EXCLUDED.char_count,
                     preview_text = EXCLUDED.preview_text,
+                    full_text = EXCLUDED.full_text,
                     indexed_at = EXCLUDED.indexed_at;
                 """,
                 (
@@ -83,6 +84,7 @@ class NeonService:
                     chunk.token_count,
                     chunk.char_count,
                     chunk.preview_text,
+                    getattr(chunk, 'full_text', chunk.preview_text),  # Use preview if full_text not available
                     chunk.indexed_at
                 )
             )
@@ -119,7 +121,7 @@ class NeonService:
             cursor.execute(
                 """
                 SELECT chunk_id, chapter_id, section_id, section_title,
-                       chunk_index, token_count, char_count, preview_text, indexed_at
+                       chunk_index, token_count, char_count, preview_text, full_text, indexed_at
                 FROM chunk_metadata
                 WHERE chunk_id = %s;
                 """,
@@ -160,7 +162,7 @@ class NeonService:
             cursor.execute(
                 """
                 SELECT chunk_id, chapter_id, section_id, section_title,
-                       chunk_index, token_count, char_count, preview_text, indexed_at
+                       chunk_index, token_count, char_count, preview_text, full_text, indexed_at
                 FROM chunk_metadata
                 WHERE chunk_id = ANY(%s);
                 """,
@@ -216,6 +218,42 @@ class NeonService:
             logger.error(f"Failed to get chapter stats: {e}")
             return {}
 
+        finally:
+            if conn:
+                self.release_connection(conn)
+
+    async def fetch_one(self, query: str, *args):
+        """Fetch a single record (for cache retrieval)."""
+        conn = None
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor(cursor_factory=RealDictCursor)
+            cursor.execute(query, args)
+            result = cursor.fetchone()
+            cursor.close()
+            return dict(result) if result else None
+        except Exception as e:
+            logger.error(f"Fetch one failed: {e}")
+            return None
+        finally:
+            if conn:
+                self.release_connection(conn)
+
+    async def execute(self, query: str, *args):
+        """Execute a query (for cache saving)."""
+        conn = None
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute(query, args)
+            conn.commit()
+            cursor.close()
+            return True
+        except Exception as e:
+            logger.error(f"Execution failed: {e}")
+            if conn:
+                conn.rollback()
+            return False
         finally:
             if conn:
                 self.release_connection(conn)

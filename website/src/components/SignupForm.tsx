@@ -1,229 +1,306 @@
 import React, { useState } from 'react';
 import { useAuth } from '@site/src/contexts/AuthContext';
-
-interface ProfileFormData {
-  softwareBackground: string;
-  programmingLanguages: string;
-  roboticsExperience: string;
-  hardwareAccess: string[];
-}
+import { authClient } from '@site/src/auth/client';
 
 const SignupForm: React.FC = () => {
   const { signUp } = useAuth();
+  const [step, setStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     name: '',
-    softwareBackground: '',
-    programmingLanguages: '',
-    roboticsExperience: '',
+    // Software Skills
+    python: 'beginner',
+    typescript: 'none',
+    cpp: 'none',
+    ros2: 'none',
+    // Robotics Experience
+    roboticsExperience: 'none',
+    // Hardware Access
     hardwareAccess: [] as string[],
+    // Learning Goals
+    learningGoals: [] as string[],
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const softwareLevels = ['none', 'beginner', 'intermediate', 'advanced'];
+  const roboticsExpLevels = [
+    { value: 'none', label: 'No experience' },
+    { value: 'simulation_only', label: 'Simulation only (Gazebo, Isaac Sim)' },
+    { value: 'real_hardware', label: 'Real hardware (Robot kits, custom builds)' }
+  ];
+  const hardwareOptions = [
+    { value: 'gpu_nvidia', label: 'NVIDIA GPU' },
+    { value: 'jetson_nano', label: 'Jetson Nano' },
+    { value: 'jetson_orin', label: 'Jetson Orin' },
+    { value: 'robot_kit', label: 'Robot Kit (TurtleBot, etc.)' },
+    { value: 'lidar', label: 'LiDAR' },
+    { value: 'camera_depth', label: 'Depth Camera' }
+  ];
+  const goalOptions = [
+    { value: 'career_change', label: 'Career change to robotics' },
+    { value: 'academic_research', label: 'Academic research' },
+    { value: 'hobby', label: 'Hobby/personal projects' },
+    { value: 'professional_dev', label: 'Professional development' }
+  ];
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const toggleHardware = (value: string) => {
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'hardwareAccess' ? 
-        (e.target as HTMLInputElement).checked ? 
-          [...prev.hardwareAccess, value] : 
-          prev.hardwareAccess.filter(item => item !== value) :
-        value
+      hardwareAccess: prev.hardwareAccess.includes(value)
+        ? prev.hardwareAccess.filter(i => i !== value)
+        : [...prev.hardwareAccess, value]
     }));
   };
 
-  const handleMultiSelectChange = (option: string) => {
-    setFormData(prev => {
-      if (prev.hardwareAccess.includes(option)) {
-        return {
-          ...prev,
-          hardwareAccess: prev.hardwareAccess.filter(item => item !== option)
-        };
-      } else {
-        return {
-          ...prev,
-          hardwareAccess: [...prev.hardwareAccess, option]
-        };
-      }
-    });
+  const toggleGoal = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      learningGoals: prev.learningGoals.includes(value)
+        ? prev.learningGoals.filter(i => i !== value)
+        : [...prev.learningGoals, value]
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (step < 3) {
+      setStep(step + 1);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
     try {
-      // Prepare profile data
       const profile = {
-        softwareBackground: formData.softwareBackground,
-        programmingLanguages: formData.programmingLanguages.split(',').map(lang => lang.trim()).filter(lang => lang),
+        softwareExperience: {
+          python: formData.python,
+          typescript: formData.typescript,
+          cpp: formData.cpp,
+          ros2: formData.ros2
+        },
         roboticsExperience: formData.roboticsExperience,
         hardwareAccess: formData.hardwareAccess,
+        learningGoals: formData.learningGoals
       };
 
-      // Call the signup function with profile data
-      await signUp(formData.email, formData.password, formData.name, profile);
+      // 1. Create user in Better Auth
+      const { data, error: authError } = await authClient.signUp.email({
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        callbackURL: "/"
+      });
+
+      if (authError) throw new Error(authError.message);
+
+      // 2. Create profile in Backend
+      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8000";
+      const profileResponse = await fetch(`${apiUrl}/api/profile`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Better Auth session token is in cookies, which fetch includes by default
+          // with credentials: 'include'.
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          software_experience: {
+            python: formData.python,
+            typescript: formData.typescript,
+            cpp: formData.cpp,
+            ros2: formData.ros2
+          },
+          robotics_experience: formData.robotics_experience,
+          hardware_access: formData.hardwareAccess,
+          learning_goals: formData.learningGoals
+        }),
+      });
+
+      if (!profileResponse.ok) {
+        console.warn('User created but profile save failed. Retrying later.');
+      }
+
+      window.location.href = "/";
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred during signup');
+      setError(err instanceof Error ? err.message : 'Signup failed');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-center">Create Account</h2>
-      
+    <div className="max-w-lg mx-auto p-8 bg-white rounded-xl shadow-lg border border-gray-100">
+      <div className="mb-8">
+        <h2 className="text-3xl font-extrabold text-gray-900 text-center">Join the Course</h2>
+        <div className="flex justify-center mt-4 space-x-2">
+          {[1, 2, 3].map(i => (
+            <div
+              key={i}
+              className={`h-2 w-12 rounded-full ${step >= i ? 'bg-blue-600' : 'bg-gray-200'}`}
+            />
+          ))}
+        </div>
+      </div>
+
       {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
-          {error}
+        <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700">
+          <p className="font-medium">Error</p>
+          <p className="text-sm">{error}</p>
         </div>
       )}
-      
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-            Full Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        
-        {/* Software Background */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Software Background
-          </label>
-          <div className="space-y-2">
-            {['beginner', 'intermediate', 'advanced'].map(level => (
-              <label key={level} className="flex items-center">
-                <input
-                  type="radio"
-                  name="softwareBackground"
-                  value={level}
-                  checked={formData.softwareBackground === level}
-                  onChange={handleChange}
-                  required
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="ml-2 text-gray-700 capitalize">{level}</span>
-              </label>
-            ))}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {step === 1 && (
+          <div className="space-y-4 animate-fadeIn">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
+              <input
+                name="name"
+                type="text"
+                required
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="John Doe"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+              <input
+                name="email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="john@example.com"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+              <input
+                name="password"
+                type="password"
+                required
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+              />
+            </div>
           </div>
-        </div>
-        
-        {/* Programming Languages */}
-        <div className="mb-4">
-          <label htmlFor="programmingLanguages" className="block text-sm font-medium text-gray-700 mb-1">
-            Programming Languages Known (comma separated)
-          </label>
-          <input
-            type="text"
-            id="programmingLanguages"
-            name="programmingLanguages"
-            value={formData.programmingLanguages}
-            onChange={handleChange}
-            placeholder="e.g., Python, C++, JavaScript"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <p className="mt-1 text-xs text-gray-500">Separate multiple languages with commas</p>
-        </div>
-        
-        {/* Robotics Experience */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Robotics Experience
-          </label>
-          <div className="space-y-2">
-            {['none', 'simulation-only', 'real hardware'].map(exp => (
-              <label key={exp} className="flex items-center">
-                <input
-                  type="radio"
-                  name="roboticsExperience"
-                  value={exp}
-                  checked={formData.roboticsExperience === exp}
-                  onChange={handleChange}
-                  required
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="ml-2 text-gray-700">
-                  {exp === 'none' && 'No experience'}
-                  {exp === 'simulation-only' && 'Simulation only'}
-                  {exp === 'real hardware' && 'Real hardware'}
-                </span>
-              </label>
-            ))}
+        )}
+
+        {step === 2 && (
+          <div className="space-y-6 animate-fadeIn">
+            <h3 className="text-lg font-bold text-gray-800 border-b pb-2">Software & Robotics Skills</h3>
+            <div className="grid grid-cols-2 gap-4">
+              {['python', 'cpp', 'ros2', 'typescript'].map(lang => (
+                <div key={lang}>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{lang === 'cpp' ? 'C++' : lang}</label>
+                  <select
+                    name={lang}
+                    value={formData[lang as keyof typeof formData] as string}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                  >
+                    {softwareLevels.map(l => <option key={l} value={l}>{l.charAt(0).toUpperCase() + l.slice(1)}</option>)}
+                  </select>
+                </div>
+              ))}
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Robotics Experience</label>
+              <div className="space-y-2">
+                {roboticsExpLevels.map(level => (
+                  <label key={level.value} className="flex items-center p-3 border rounded-lg hover:bg-blue-50 cursor-pointer transition">
+                    <input
+                      type="radio"
+                      name="roboticsExperience"
+                      value={level.value}
+                      checked={formData.roboticsExperience === level.value}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-blue-600"
+                    />
+                    <span className="ml-3 text-sm text-gray-700">{level.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-        
-        {/* Hardware Access */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Hardware Access
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            {['GPU', 'Jetson', 'Robot kits', 'None'].map(hw => (
-              <label key={hw} className="flex items-center">
-                <input
-                  type="checkbox"
-                  value={hw.toLowerCase()}
-                  checked={formData.hardwareAccess.includes(hw.toLowerCase())}
-                  onChange={() => handleMultiSelectChange(hw.toLowerCase())}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="ml-2 text-gray-700">{hw}</span>
-              </label>
-            ))}
+        )}
+
+        {step === 3 && (
+          <div className="space-y-6 animate-fadeIn">
+            <h3 className="text-lg font-bold text-gray-800 border-b pb-2">Hardware & Goals</h3>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Hardware Access</label>
+              <div className="grid grid-cols-2 gap-2">
+                {hardwareOptions.map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => toggleHardware(opt.value)}
+                    className={`px-3 py-2 text-xs font-medium rounded-full border transition ${
+                      formData.hardwareAccess.includes(opt.value)
+                        ? 'bg-blue-600 text-white border-blue-600'
+                        : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Learning Goals</label>
+              <div className="space-y-2">
+                {goalOptions.map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => toggleGoal(opt.value)}
+                    className={`w-full text-left px-4 py-3 text-sm rounded-lg border transition ${
+                      formData.learning_goals.includes(opt.value)
+                        ? 'bg-green-50 border-green-500 text-green-700'
+                        : 'bg-white border-gray-300 text-gray-700 hover:border-blue-400'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
+        )}
+
+        <div className="flex pt-6 space-x-3">
+          {step > 1 && (
+            <button
+              type="button"
+              onClick={() => setStep(step - 1)}
+              className="flex-1 py-3 px-4 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition"
+            >
+              Previous
+            </button>
+          )}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="flex-[2] py-3 px-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 shadow-md transition disabled:opacity-50"
+          >
+            {isLoading ? 'Processing...' : (step === 3 ? 'Complete Signup' : 'Next Step')}
+          </button>
         </div>
-        
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-        >
-          {isLoading ? 'Creating Account...' : 'Sign Up'}
-        </button>
       </form>
     </div>
   );

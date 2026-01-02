@@ -1,0 +1,50 @@
+# Auth API Contract (Better Auth Sidecar)
+
+**Base URL**: `http://localhost:3001/auth`
+
+The following endpoints are managed by the Better Auth Node.js server.
+
+## Endpoints
+
+### 1. Sign Up
+`POST /signup`
+
+**Request Body**:
+```json
+{
+  "email": "student@example.com",
+  "password": "secure-password-123",
+  "name": "Jane Doe"
+}
+```
+
+### 2. Sign In
+`POST /signin`
+
+**Request Body**:
+```json
+{
+  "email": "student@example.com",
+  "password": "secure-password-123"
+}
+```
+
+### 3. Get Session
+`GET /session`
+
+Used by FastAPI and Frontend to verify authentication status.
+
+**Response**:
+```json
+{
+  "user": {
+    "id": "uuid-v4",
+    "email": "student@example.com",
+    "name": "Jane Doe"
+  },
+  "session": {
+    "token": "token-string",
+    "expiresAt": "timestamp"
+  }
+}
+```

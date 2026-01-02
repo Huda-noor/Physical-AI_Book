@@ -15,7 +15,7 @@ from app.config import settings
 logger = logging.getLogger(__name__)
 
 COLLECTION_NAME = "textbook_chunks"
-VECTOR_SIZE = 384  # all-MiniLM-L6-v2 embedding dimension
+VECTOR_SIZE = 1536  # text-embedding-ada-002 embedding dimension
 
 
 class QdrantService:

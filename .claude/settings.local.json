@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -ExecutionPolicy Bypass -File .specify/scripts/powershell/setup-plan.ps1 -Json)",
+      "Bash(bash:*)",
+      "Bash(pip:*)",
+      "WebSearch",
+      "mcp__Neon__run_sql",
+      "mcp__Neon__list_projects",
+      "mcp__Neon__run_sql_transaction",
+      "Bash(npm install:*)",
+      "Bash(E:/.specify/scripts/bash/create-phr.sh:*)",
+      "Bash(powershell:*)",
+      "Bash(pytest:*)",
+      "Bash(npm test:*)"
+    ]
+  }
+}

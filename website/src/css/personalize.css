@@ -41,8 +41,14 @@
   color: var(--ifm-color-emphasis-700);
 }
 
-.personalize-text {
-  user-select: none;
+.personalize-button.active {
+  background: var(--ifm-color-primary);
+  border-color: var(--ifm-color-primary-darker);
+  color: white;
+}
+
+.personalize-button.active .personalize-icon {
+  color: white;
 }
 
 /* Dark mode adjustments */

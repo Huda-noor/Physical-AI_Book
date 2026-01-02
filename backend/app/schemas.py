@@ -29,6 +29,12 @@ class ChatQueryRequest(BaseModel):
         description="Number of relevant chunks to retrieve"
     )
 
+    selected_text: str | None = Field(
+        default=None,
+        max_length=5000,
+        description="Optional user-selected text to restrict context"
+    )
+
     @field_validator("question")
     @classmethod
     def sanitize_question(cls, v: str) -> str:
@@ -97,9 +103,10 @@ class ChunkMetadata(BaseModel):
     section_id: str
     section_title: str
     chunk_index: int = Field(..., ge=0)
-    token_count: int = Field(..., ge=100, le=512)
+    token_count: int = Field(..., ge=0, le=2000)
     char_count: int = Field(..., gt=0)
     preview_text: str
+    full_text: str = Field(default="")
     indexed_at: datetime = Field(default_factory=datetime.utcnow)
 
     class Config:
